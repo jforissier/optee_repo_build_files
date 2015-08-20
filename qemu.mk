@@ -50,7 +50,7 @@ all-clean: bios-qemu-clean busybox-clean linux-clean optee-os-clean \
 # QEMU
 ################################################################################
 define bios-qemu-common
-	make -C $(BIOS_QEMU_PATH) \
+	$(MAKE) -C $(BIOS_QEMU_PATH) \
 		CROSS_COMPILE="$(CROSS_COMPILE)" \
 		O=$(ROOT)/out/bios-qemu \
 		BIOS_NSEC_BLOB=$(LINUX_PATH)/arch/arm/boot/zImage \
@@ -67,11 +67,10 @@ bios-qemu-clean:
 
 qemu:
 	cd $(QEMU_PATH); ./configure --target-list=arm-softmmu --cc="$(CCACHE)gcc"
-	make -C $(QEMU_PATH) \
-		-j`getconf _NPROCESSORS_ONLN`
+	$(MAKE) -C $(QEMU_PATH)
 
 qemu-clean:
-	make -C $(QEMU_PATH) distclean
+	$(MAKE) -C $(QEMU_PATH) distclean
 
 ################################################################################
 # Busybox
@@ -95,19 +94,18 @@ busybox-clean:
 $(LINUX_PATH)/.config:
 	# Temporary fix until we have the driver integrated in the kernel
 	sed -i '/config ARM$$/a select DMA_SHARED_BUFFER' $(LINUX_PATH)/arch/arm/Kconfig;
-	make -C $(LINUX_PATH) ARCH=arm vexpress_defconfig
+	$(MAKE) -C $(LINUX_PATH) ARCH=arm vexpress_defconfig
 
 linux-defconfig: $(LINUX_PATH)/.config
 
 linux: linux-defconfig
-	make -C $(LINUX_PATH) \
+	$(MAKE) -C $(LINUX_PATH) \
 		CROSS_COMPILE="$(CROSS_COMPILE)" \
 		LOCALVERSION= \
-		ARCH=arm \
-		-j`getconf _NPROCESSORS_ONLN`
+		ARCH=arm
 
 linux-clean:
-	make -C $(LINUX_PATH) \
+	$(MAKE) -C $(LINUX_PATH) \
 		CROSS_COMPILE="$(CROSS_COMPILE)" \
 		mrproper
 
@@ -115,30 +113,28 @@ linux-clean:
 # OP-TEE
 ################################################################################
 optee-os:
-	make -C $(OPTEE_OS_PATH) \
+	$(MAKE) -C $(OPTEE_OS_PATH) \
 		CROSS_COMPILE="$(CROSS_COMPILE)" \
 		PLATFORM=vexpress \
 		PLATFORM_FLAVOR=qemu_virt \
 		CFG_TEE_CORE_LOG_LEVEL=3 \
-		DEBUG=1 \
-		-j`getconf _NPROCESSORS_ONLN`
+		DEBUG=1
 
 optee-os-clean:
-	make -C $(OPTEE_OS_PATH) \
+	$(MAKE) -C $(OPTEE_OS_PATH) \
 		PLATFORM=vexpress \
 		PLATFORM_FLAVOR=qemu_virt \
 		clean
 
 optee-client:
-	make -C $(OPTEE_CLIENT_PATH) \
-		CROSS_COMPILE="$(CROSS_COMPILE)" \
-		-j`getconf _NPROCESSORS_ONLN`
+	$(MAKE) -C $(OPTEE_CLIENT_PATH) \
+		CROSS_COMPILE="$(CROSS_COMPILE)"
 
 optee-client-clean:
-	make -C $(OPTEE_CLIENT_PATH) clean
+	$(MAKE) -C $(OPTEE_CLIENT_PATH) clean
 
 optee-linuxdriver: linux
-	make -C $(LINUX_PATH) \
+	$(MAKE) -C $(LINUX_PATH) \
 		V=0 \
 		ARCH=arm \
 		CROSS_COMPILE="$(CROSS_COMPILE)" \
@@ -146,25 +142,24 @@ optee-linuxdriver: linux
 		M=$(OPTEE_LINUXDRIVER_PATH) modules
 
 optee-linuxdriver-clean:
-	make -C $(LINUX_PATH) \
+	$(MAKE) -C $(LINUX_PATH) \
 		M=$(OPTEE_LINUXDRIVER_PATH) clean
 
 ################################################################################
 # Soc-term
 ################################################################################
 soc-term:
-	make -C $(SOC_TERM_PATH)
+	$(MAKE) -C $(SOC_TERM_PATH)
 
 soc-term-clean:
-	make -C $(SOC_TERM_PATH) clean
+	$(MAKE) -C $(SOC_TERM_PATH) clean
 
 ################################################################################
 # xtest / optee_test
 ################################################################################
 xtest: optee-os optee-client
 	@if [ -d "$(OPTEE_TEST_PATH)" ]; then \
-		make -C $(OPTEE_TEST_PATH) \
-		-j`getconf _NPROCESSORS_ONLN` \
+		$(MAKE) -C $(OPTEE_TEST_PATH) \
 		CROSS_COMPILE_HOST="$(CROSS_COMPILE)" \
 		CROSS_COMPILE_TA="$(CROSS_COMPILE)" \
 		TA_DEV_KIT_DIR=$(OPTEE_OS_PATH)/out/arm-plat-vexpress/export-user_ta \
@@ -175,8 +170,7 @@ xtest: optee-os optee-client
 
 xtest-clean:
 	@if [ -d "$(OPTEE_TEST_PATH)" ]; then \
-		make -C $(OPTEE_TEST_PATH) \
-		-j`getconf _NPROCESSORS_ONLN` \
+		$(MAKE) -C $(OPTEE_TEST_PATH) \
 		CROSS_COMPILE_HOST="$(CROSS_COMPILE)" \
 		CROSS_COMPILE_TA="$(CROSS_COMPILE)" \
 		TA_DEV_KIT_DIR=$(OPTEE_OS_PATH)/out/arm-plat-vexpress/export-user_ta \
@@ -188,8 +182,7 @@ xtest-clean:
 
 xtest-patch: optee-os optee-client
 	@if [ -d "$(OPTEE_TEST_PATH)" ]; then \
-		make -C $(OPTEE_TEST_PATH) \
-		-j`getconf _NPROCESSORS_ONLN` \
+		$(MAKE) -C $(OPTEE_TEST_PATH) \
 		CROSS_COMPILE_HOST="$(CROSS_COMPILE)" \
 		CROSS_COMPILE_TA="$(CROSS_COMPILE)" \
 		TA_DEV_KIT_DIR=$(OPTEE_OS_PATH)/out/arm-plat-vexpress/export-user_ta \
