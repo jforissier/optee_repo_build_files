@@ -149,7 +149,7 @@ optee-linuxdriver-clean:
 # Soc-term
 ################################################################################
 soc-term:
-	$(MAKE) -C $(SOC_TERM_PATH)
+	$(MAKE) -C $(SOC_TERM_PATH) CC="$(CCACHE)gcc"
 
 soc-term-clean:
 	$(MAKE) -C $(SOC_TERM_PATH) clean
