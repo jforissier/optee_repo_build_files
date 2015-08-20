@@ -52,6 +52,7 @@ expect "root@Vexpress:/ "
 sleep 1
 info " done.\nRunning: $cmd...\n"
 send -- "$cmd\r"
+set casenum "none"
 expect {
 	# Exit with error status as soon as a test fails
 	-re {  XTEST_TEE_([^ ]+) FAIL} {
@@ -84,7 +85,7 @@ expect {
 	"+-----------------------------------------------------\r\r" {}
 	timeout {
 		info "!!! Timeout\n"
-		info "TIMEOUT - test case too long or hung? ($casenum)\n"
+		info "TIMEOUT - test case too long or hung? (last test started: $casenum)\n"
 		exit 2
 	}
 }
