@@ -34,6 +34,8 @@ endef
 
 CCACHE ?= $(shell which ccache) # Don't remove this comment (space is needed)
 
+CROSS_COMPILE ?= $(CCACHE)$(AARCH32_CROSS_COMPILE)
+
 ################################################################################
 # Targets
 ################################################################################
@@ -49,7 +51,7 @@ all-clean: bios-qemu-clean busybox-clean linux-clean optee-os-clean \
 ################################################################################
 define bios-qemu-common
 	make -C $(BIOS_QEMU_PATH) \
-		CROSS_COMPILE="$(CCACHE)$(AARCH32_CROSS_COMPILE)" \
+		CROSS_COMPILE="$(CROSS_COMPILE)" \
 		O=$(ROOT)/out/bios-qemu \
 		BIOS_NSEC_BLOB=$(LINUX_PATH)/arch/arm/boot/zImage \
 		BIOS_NSEC_ROOTFS=$(GEN_ROOTFS_PATH)/filesystem.cpio.gz \
@@ -99,14 +101,14 @@ linux-defconfig: $(LINUX_PATH)/.config
 
 linux: linux-defconfig
 	make -C $(LINUX_PATH) \
-		CROSS_COMPILE="$(CCACHE)$(AARCH32_CROSS_COMPILE)" \
+		CROSS_COMPILE="$(CROSS_COMPILE)" \
 		LOCALVERSION= \
 		ARCH=arm \
 		-j`getconf _NPROCESSORS_ONLN`
 
 linux-clean:
 	make -C $(LINUX_PATH) \
-		CROSS_COMPILE="$(CCACHE)$(AARCH32_CROSS_COMPILE)" \
+		CROSS_COMPILE="$(CROSS_COMPILE)" \
 		mrproper
 
 ################################################################################
@@ -114,7 +116,7 @@ linux-clean:
 ################################################################################
 optee-os:
 	make -C $(OPTEE_OS_PATH) \
-		CROSS_COMPILE="$(CCACHE)$(AARCH32_CROSS_COMPILE)" \
+		CROSS_COMPILE="$(CROSS_COMPILE)" \
 		PLATFORM=vexpress \
 		PLATFORM_FLAVOR=qemu_virt \
 		CFG_TEE_CORE_LOG_LEVEL=3 \
@@ -129,7 +131,7 @@ optee-os-clean:
 
 optee-client:
 	make -C $(OPTEE_CLIENT_PATH) \
-		CROSS_COMPILE="$(CCACHE)$(AARCH32_CROSS_COMPILE)" \
+		CROSS_COMPILE="$(CROSS_COMPILE)" \
 		-j`getconf _NPROCESSORS_ONLN`
 
 optee-client-clean:
@@ -139,7 +141,7 @@ optee-linuxdriver: linux
 	make -C $(LINUX_PATH) \
 		V=0 \
 		ARCH=arm \
-		CROSS_COMPILE="$(CCACHE)$(AARCH32_CROSS_COMPILE)" \
+		CROSS_COMPILE="$(CROSS_COMPILE)" \
 		LOCALVERSION= \
 		M=$(OPTEE_LINUXDRIVER_PATH) modules
 
@@ -163,8 +165,8 @@ xtest: optee-os optee-client
 	@if [ -d "$(OPTEE_TEST_PATH)" ]; then \
 		make -C $(OPTEE_TEST_PATH) \
 		-j`getconf _NPROCESSORS_ONLN` \
-		CROSS_COMPILE_HOST="$(CCACHE)$(AARCH32_CROSS_COMPILE)" \
-		CROSS_COMPILE_TA="$(CCACHE)$(AARCH32_CROSS_COMPILE)" \
+		CROSS_COMPILE_HOST="$(CROSS_COMPILE)" \
+		CROSS_COMPILE_TA="$(CROSS_COMPILE)" \
 		TA_DEV_KIT_DIR=$(OPTEE_OS_PATH)/out/arm-plat-vexpress/export-user_ta \
 		CFG_ARM32=y \
 		CFG_DEV_PATH=$(ROOT) \
@@ -175,8 +177,8 @@ xtest-clean:
 	@if [ -d "$(OPTEE_TEST_PATH)" ]; then \
 		make -C $(OPTEE_TEST_PATH) \
 		-j`getconf _NPROCESSORS_ONLN` \
-		CROSS_COMPILE_HOST="$(CCACHE)$(AARCH32_CROSS_COMPILE)" \
-		CROSS_COMPILE_TA="$(CCACHE)$(AARCH32_CROSS_COMPILE)" \
+		CROSS_COMPILE_HOST="$(CROSS_COMPILE)" \
+		CROSS_COMPILE_TA="$(CROSS_COMPILE)" \
 		TA_DEV_KIT_DIR=$(OPTEE_OS_PATH)/out/arm-plat-vexpress/export-user_ta \
 		CFG_ARM32=y \
 		CFG_DEV_PATH=$(ROOT) \
@@ -188,8 +190,8 @@ xtest-patch: optee-os optee-client
 	@if [ -d "$(OPTEE_TEST_PATH)" ]; then \
 		make -C $(OPTEE_TEST_PATH) \
 		-j`getconf _NPROCESSORS_ONLN` \
-		CROSS_COMPILE_HOST="$(CCACHE)$(AARCH32_CROSS_COMPILE)" \
-		CROSS_COMPILE_TA="$(CCACHE)$(AARCH32_CROSS_COMPILE)" \
+		CROSS_COMPILE_HOST="$(CROSS_COMPILE)" \
+		CROSS_COMPILE_TA="$(CROSS_COMPILE)" \
 		TA_DEV_KIT_DIR=$(OPTEE_OS_PATH)/out/arm-plat-vexpress/export-user_ta \
 		CFG_ARM32=y \
 		CFG_DEV_PATH=$(ROOT) \
