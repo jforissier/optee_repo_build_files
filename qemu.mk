@@ -272,7 +272,8 @@ check-args += --timeout $(TIMEOUT)
 endif
 
 check: $(CHECK_DEPS)
-	expect qemu-check.exp -- $(check-args)
+	expect qemu-check.exp -- $(check-args) || \
+		(echo "Please check $$PWD/serial{0,1}.log"; false)
 
 check-only: check
 
