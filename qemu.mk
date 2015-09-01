@@ -273,7 +273,14 @@ endif
 
 check: $(CHECK_DEPS)
 	expect qemu-check.exp -- $(check-args) || \
-		(echo "Please check $$PWD/serial{0,1}.log"; false)
+		(if [ "$(DUMP_LOGS_ON_ERROR)" ]; then \
+			echo "== $$PWD/serial0.log:"; \
+			cat serial0.log; \
+			echo "== end of $$PWD/serial0.log:"; \
+			echo "== $$PWD/serial1.log:"; \
+			cat serial1.log; \
+			echo "== end of $$PWD/serial1.log:"; \
+		fi; false)
 
 check-only: check
 
