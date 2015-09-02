@@ -40,10 +40,23 @@ log_user 0
 log_file -a -noappend "serial0.log"
 info "Starting QEMU..."
 spawn ../qemu/arm-softmmu/qemu-system-arm -nographic -monitor none -machine virt -cpu cortex-a15 -m 1057 -serial stdio -serial file:serial1.log -bios $bios
-expect "Please press Enter to activate this console. "
+expect {
+	"Kernel panic" {
+		info "!!! Kernel panic\n"
+		exit 1
+	}
+	timeout {
+		info "!!! Timeout\n"
+		exit 1
+	}
+	"Please press Enter to activate this console. "
+}
 send -- "\r"
 expect "root@Vexpress:/ "
 info " done, guest is booted.\nLoading OP-TEE driver and tee-supplicant..."
+# Toolchain libraries might be here or there
+send -- "export LD_LIBRARY_PATH=/lib:/lib/arm-linux-gnueabihf\r"
+expect "root@Vexpress:/ "
 send -- "modprobe optee_armtz\r"
 expect "root@Vexpress:/ "
 sleep 1
