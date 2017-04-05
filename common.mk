@@ -181,7 +181,7 @@ $(EDK2_PATH)/Conf/target.txt:
 
 edk2-common: $(EDK2_PATH)/Conf/target.txt
 	set -e && cd $(EDK2_PATH) && source edksetup.sh && \
-	$(call edk2-call)
+	unset MAKEFLAGS && $(call edk2-call)
 
 edk2-clean-common:
 	set -e && cd $(EDK2_PATH) && source edksetup.sh && \
