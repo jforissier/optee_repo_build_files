@@ -180,6 +180,7 @@ run-only:
 		-smp $(QEMU_SMP) \
 		-s -S -machine virt -machine secure=on -cpu cortex-a15 \
 		-d unimp  -semihosting-config enable,target=native \
+		-drive if=none,file=$(ROOT)/out-br/images/rootfs.ext2,id=rfs,format=raw -device virtio-blk-device,drive=rfs \
 		-m 1057 \
 		-bios bl1.bin \
 		$(QEMU_EXTRA_ARGS) )
