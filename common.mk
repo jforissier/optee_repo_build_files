@@ -203,6 +203,9 @@ buildroot: optee-os
 		../out-br/extra.conf
 	@echo "BR2_ROOTFS_OVERLAY=\"$(ROOT)/build/br-ext/board/qemu/overlay\"" >> \
 		../out-br/extra.conf
+	@echo "BR2_ROOTFS_DEVICE_CREATION_DYNAMIC_MDEV=y" >> ../out-br/extra.conf
+	@echo "BR2_ROOTFS_POST_BUILD_SCRIPT=\"$(ROOT)/build/br-ext/board/qemu/post_build.sh\"" >> \
+		../out-br/extra.conf
 	@echo "BR2_PACKAGE_OPTEE_TEST_CROSS_COMPILE=\"$(CROSS_COMPILE_S_USER)\"" >> \
 		../out-br/extra.conf
 	@echo "BR2_PACKAGE_OPTEE_EXAMPLES_CROSS_COMPILE=\"$(CROSS_COMPILE_S_USER)\"" >> \
