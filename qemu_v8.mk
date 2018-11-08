@@ -51,6 +51,7 @@ ARM_TF_FLAGS ?= \
 	PLAT=qemu \
 	DEBUG=0 \
 	LOG_LEVEL=50 \
+	ERROR_DEPRECATED=1 \
 	BL32_RAM_LOCATION=tdram \
 	SPD=opteed
 
