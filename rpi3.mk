@@ -64,6 +64,7 @@ ARM_TF_FLAGS ?= \
 	V=0 \
 	CRASH_REPORTING=1 \
 	LOG_LEVEL=40 \
+	ERROR_DEPRECATED=1 \
 	PLAT=rpi3 \
 	SPD=opteed
 
