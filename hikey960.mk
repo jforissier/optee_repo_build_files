@@ -83,6 +83,7 @@ ARM_TF_FLAGS ?= \
 	BL33=$(EDK2_BIN) \
 	SCP_BL2=$(MCUIMAGE_BIN) \
 	DEBUG=$(DEBUG) \
+	ERROR_DEPRECATED=1 \
 	PLAT=hikey960 \
 	SPD=opteed
 
