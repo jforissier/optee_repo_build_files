@@ -91,6 +91,7 @@ arm-tf: u-boot optee-os
 		CROSS_COMPILE="$(CCACHE)$(AARCH64_CROSS_COMPILE)" \
 		all fip \
 		DEBUG=$(DEBUG) \
+		ERROR_DEPRECATED=1 \
 		PLAT=poplar \
 		SPD=opteed \
 		BL32=$(OPTEE_BIN) \
