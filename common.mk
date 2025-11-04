@@ -257,17 +257,11 @@ BUILDROOT_TOOLCHAIN=toolchain-br # Use toolchain supplied by buildroot
 DEFCONFIG_GDBSERVER=--br-defconfig build/br-ext/configs/gdbserver.conf
 else
 # Local toolchains (downloaded by "make toolchains")
-ifeq ($(UNAME_M),x86_64)
+ifneq (,$(filter x86_64 aarch64,$(UNAME_M)))
 ifeq ($(ARCH),arm)
 BUILDROOT_TOOLCHAIN=toolchain-aarch$(COMPILE_NS_USER)
 else ifeq ($(ARCH),riscv)
 BUILDROOT_TOOLCHAIN=toolchain-riscv$(COMPILE_NS_USER)
-endif
-else ifeq ($(UNAME_M),aarch64)
-ifeq ($(COMPILE_NS_USER),64)
-BUILDROOT_TOOLCHAIN=toolchain-aarch64-sdk toolchain-common-sdk
-else
-BUILDROOT_TOOLCHAIN=toolchain-aarch32
 endif
 else
 BUILDROOT_TOOLCHAIN=toolchain-aarch$(COMPILE_NS_USER)-sdk toolchain-common-sdk
